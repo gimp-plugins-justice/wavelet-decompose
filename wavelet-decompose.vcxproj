@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\decompose.c" />
+    <ClCompile Include="src\interface.c" />
+    <ClCompile Include="src\plugin.c" />
+    <ClCompile Include="src\wavelet.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\plugin.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="wavelet-decompose.props">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6A639E82-FB39-44DD-BADD-70F602E134C8}</ProjectGuid>
+    <RootNamespace>waveletdecompose</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(ProjectDir)wavelet-decompose.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(GIMP_SRC_DIR);$(GTK_SRC_DIR)\include;$(GTK_SRC_DIR)\include\atk-1.0;$(GTK_SRC_DIR)\include\cairo;$(GTK_SRC_DIR)\include\gdk-pixbuf-2.0;$(GTK_SRC_DIR)\include\glib-2.0;$(GTK_SRC_DIR)\include\gtk-2.0;$(GTK_SRC_DIR)\include\pango-1.0;$(GTK_SRC_DIR)\lib\glib-2.0\include;$(GTK_SRC_DIR)\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>atk-1.0.lib;cairo.lib;expat.lib;fontconfig.lib;freetype.lib;gailutil.lib;gdk-win32-2.0.lib;gdk_pixbuf-2.0.lib;gio-2.0.lib;glib-2.0.lib;gmodule-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;gtk-win32-2.0.lib;intl.lib;libpng.lib;pango-1.0.lib;pangocairo-1.0.lib;pangoft2-1.0.lib;pangowin32-1.0.lib;zdll.lib;libgimp-2.0-0.lib;libgimpui-2.0-0.lib;libgimpwidgets-2.0-0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(GTK_SRC_DIR)\lib\;$(ProjectDir)gimp_libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>FOR %%f in ("$(ProjectDir)po\*.po") do call "$(GETTEXT_PATH)\bin\msgfmt.exe" -c -v -o "$(TargetDir)%%~nf.mo" "%%f"
+
+copy "$(GIMP_SRC_DIR)\build\windows\plug-ins.ico" "$(ProjectDir)"
+
+if exist "$(ProjectDir)gimp_libs" goto end
+mkdir "$(ProjectDir)gimp_libs"
+for %%f in ("$(GIMP_SRC_DIR)\libgimp\*.def") do copy "%%f" "$(ProjectDir)gimp_libs\lib%%~nf-2.0-0.def"
+for %%f in ("$(GIMP_SRC_DIR)\libgimpwidgets\*.def") do copy "%%f" "$(ProjectDir)gimp_libs\lib%%~nf-2.0-0.def"
+for %%f in ("$(ProjectDir)gimp_libs\*.def") do lib /def:"%%f" /out:"$(ProjectDir)gimp_libs\%%~nf.lib" /machine:x86
+:end</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(GIMP_SRC_DIR);$(GTK_SRC_DIR)\include;$(GTK_SRC_DIR)\include\atk-1.0;$(GTK_SRC_DIR)\include\cairo;$(GTK_SRC_DIR)\include\gdk-pixbuf-2.0;$(GTK_SRC_DIR)\include\glib-2.0;$(GTK_SRC_DIR)\include\gtk-2.0;$(GTK_SRC_DIR)\include\pango-1.0;$(GTK_SRC_DIR)\lib\glib-2.0\include;$(GTK_SRC_DIR)\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>atk-1.0.lib;cairo.lib;expat.lib;fontconfig.lib;freetype.lib;gailutil.lib;gdk-win32-2.0.lib;gdk_pixbuf-2.0.lib;gio-2.0.lib;glib-2.0.lib;gmodule-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;gtk-win32-2.0.lib;intl.lib;libpng.lib;pango-1.0.lib;pangocairo-1.0.lib;pangoft2-1.0.lib;pangowin32-1.0.lib;zdll.lib;libgimp-2.0-0.lib;libgimpui-2.0-0.lib;libgimpwidgets-2.0-0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(GTK_SRC_DIR)\lib\;$(ProjectDir)gimp_libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PreBuildEvent>
+      <Command>FOR %%f in ("$(ProjectDir)po\*.po") do call "$(GETTEXT_PATH)\bin\msgfmt.exe" -c -v -o "$(TargetDir)%%~nf.mo" "%%f"
+
+copy "$(GIMP_SRC_DIR)\build\windows\plug-ins.ico" "$(ProjectDir)"
+
+if exist "$(ProjectDir)gimp_libs" goto end
+mkdir "$(ProjectDir)gimp_libs"
+for %%f in ("$(GIMP_SRC_DIR)\libgimp\*.def") do copy "%%f" "$(ProjectDir)gimp_libs\lib%%~nf-2.0-0.def"
+for %%f in ("$(GIMP_SRC_DIR)\libgimpwidgets\*.def") do copy "%%f" "$(ProjectDir)gimp_libs\lib%%~nf-2.0-0.def"
+for %%f in ("$(ProjectDir)gimp_libs\*.def") do lib /def:"%%f" /out:"$(ProjectDir)gimp_libs\%%~nf.lib" /machine:x86
+:end</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
